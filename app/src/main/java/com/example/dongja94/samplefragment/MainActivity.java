@@ -7,8 +7,9 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements OneFragment.OnMessageListener {
 
     private static final String F1_TAG = "f1";
     private static final String F2_TAG = "f2";
@@ -68,6 +69,12 @@ public class MainActivity extends AppCompatActivity {
         });
 
         f1 = OneFragment.instantiate("Hi Fragment");
+        ((OneFragment)f1).setOnMessageListener(new OneFragment.OnMessageListener() {
+            @Override
+            public void receiveMessage(String message) {
+                // ...
+            }
+        });
         f2 = new TwoFragment();
         btn = (Button)findViewById(R.id.btn_other);
         btn.setOnClickListener(new View.OnClickListener() {
@@ -83,5 +90,10 @@ public class MainActivity extends AppCompatActivity {
         ft.commit();
         current = f1;
 
+    }
+
+
+    public void receiveMessage(String message) {
+        Toast.makeText(this, "message : " + message, Toast.LENGTH_SHORT).show();
     }
 }

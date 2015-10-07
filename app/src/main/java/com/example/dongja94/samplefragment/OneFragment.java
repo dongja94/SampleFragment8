@@ -1,6 +1,7 @@
 package com.example.dongja94.samplefragment;
 
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -30,6 +31,16 @@ public class OneFragment extends Fragment {
         // Required empty public constructor
     }
 
+    public interface OnMessageListener {
+        public void receiveMessage(String message);
+    }
+
+    OnMessageListener mCallback = null;
+
+    OnMessageListener mListener;
+    public void setOnMessageListener(OnMessageListener listener) {
+        mListener = listener;
+    }
 
     TextView messageView;
     EditText inputView;
@@ -38,7 +49,20 @@ public class OneFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Bundle b = getArguments();
-        message = b.getString(EXTRA_MESSAGE);
+        if (b != null) {
+            message = b.getString(EXTRA_MESSAGE);
+        } else {
+            message = "Test...";
+        }
+    }
+
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof OnMessageListener) {
+            mCallback = (OnMessageListener)context;
+        }
     }
 
     @Override
@@ -53,7 +77,15 @@ public class OneFragment extends Fragment {
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                messageView.setText(inputView.getText().toString());
+                String message = inputView.getText().toString();
+                messageView.setText(message);
+//                ((MainActivity)getActivity()).receiveMessage(message);
+                if (mCallback != null) {
+                    mCallback.receiveMessage(message);
+                }
+                if (mListener != null) {
+                    mListener.receiveMessage(message);
+                }
             }
         });
         return view;
