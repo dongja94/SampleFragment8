@@ -1,5 +1,6 @@
 package com.example.dongja94.samplefragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -9,6 +10,11 @@ import android.widget.Button;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static final String F1_TAG = "f1";
+    private static final String F2_TAG = "f2";
+
+    Fragment f1,f2, current;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -17,10 +23,23 @@ public class MainActivity extends AppCompatActivity {
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Fragment f = new OneFragment();
-                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                ft.replace(R.id.container, f);
-                ft.commit();
+                Fragment old = getSupportFragmentManager().findFragmentByTag(F1_TAG);
+                if (old == null) {
+//                    Fragment f = new OneFragment();
+                    FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                    if (current != null) {
+                        ft.detach(current);
+                    }
+                    ft.add(R.id.container, f1, F1_TAG);
+                    ft.commit();
+                    current = f1;
+                } else if (old != current) {
+                    FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                    ft.detach(current);
+                    ft.attach(f1);
+                    ft.commit();
+                    current = f1;
+                }
             }
         });
 
@@ -28,17 +47,41 @@ public class MainActivity extends AppCompatActivity {
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Fragment f = new TwoFragment();
-                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                ft.replace(R.id.container, f);
-                ft.commit();
+                Fragment old = getSupportFragmentManager().findFragmentByTag(F2_TAG);
+                if (old == null) {
+//                    Fragment f = new TwoFragment();
+                    FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                    if (current != null) {
+                        ft.detach(current);
+                    }
+                    ft.add(R.id.container, f2, F2_TAG);
+                    ft.commit();
+                    current = f2;
+                } else if (current != f2) {
+                    FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                    ft.detach(current);
+                    ft.attach(f2);
+                    ft.commit();
+                    current = f2;
+                }
             }
         });
 
-        Fragment f = new OneFragment();
+        f1 = new OneFragment();
+        f2 = new TwoFragment();
+        btn = (Button)findViewById(R.id.btn_other);
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, OtherActivity.class));
+            }
+        });
+
+//        Fragment f = new OneFragment();
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.add(R.id.container, f);
+        ft.add(R.id.container, f1, F1_TAG);
         ft.commit();
+        current = f1;
 
     }
 }
