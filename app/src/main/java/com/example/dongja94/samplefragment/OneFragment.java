@@ -17,12 +17,29 @@ import android.widget.TextView;
 public class OneFragment extends Fragment {
 
 
+    public static final String EXTRA_MESSAGE = "message";
+    public static OneFragment instantiate(String message) {
+        OneFragment f = new OneFragment();
+        Bundle b = new Bundle();
+        b.putString(EXTRA_MESSAGE, message);
+        f.setArguments(b);
+        return f;
+    }
+
     public OneFragment() {
         // Required empty public constructor
     }
 
+
     TextView messageView;
     EditText inputView;
+    String message;
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Bundle b = getArguments();
+        message = b.getString(EXTRA_MESSAGE);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -30,6 +47,7 @@ public class OneFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_one, container, false);
         messageView = (TextView)view.findViewById(R.id.text_message);
+        messageView.setText(message);
         inputView = (EditText)view.findViewById(R.id.edit_input);
         Button btn = (Button)view.findViewById(R.id.btn_send);
         btn.setOnClickListener(new View.OnClickListener() {

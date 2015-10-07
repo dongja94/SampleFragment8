@@ -67,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        f1 = new OneFragment();
+        f1 = OneFragment.instantiate("Hi Fragment");
         f2 = new TwoFragment();
         btn = (Button)findViewById(R.id.btn_other);
         btn.setOnClickListener(new View.OnClickListener() {
